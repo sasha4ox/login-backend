@@ -15,7 +15,7 @@ const port = process.env.PORT || 8000;
 app.use('/api/v1/test', testRoutes);
 
 // when a random route is inputed
-app.get('*', (req, res) => res.status(200).send({
+app.get('*', (request, response) => response.status(200).send({
     message: 'Welcome to this API.',
 }));
 
