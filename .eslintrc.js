@@ -11,6 +11,7 @@ module.exports = {
     'plugin:array-func/all',
     'plugin:lodash/recommended',
     'plugin:node/recommended',
+    'plugin:eslint-comments/recommended',
     'prettier',
   ],
   overrides: [
@@ -26,7 +27,7 @@ module.exports = {
     ecmaVersion: 2020,
     sourceType: 'module',
   },
-  plugins: ['prettier', 'promise', 'unicorn', 'array-func', 'lodash', 'node'],
+  plugins: ['prettier', 'promise', 'unicorn', 'array-func', 'lodash', 'node', 'eslint-comments'],
   rules: {
     'no-console': 0,
     'no-param-reassign': ['error', { props: false }],
