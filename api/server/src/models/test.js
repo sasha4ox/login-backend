@@ -12,17 +12,12 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-    },
-    description: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    age: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-  }, {});
-  Test.associate = function(models) {
+      age: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+    }, {});
+  Test.associate = function (models) {
     Test.hasMany(models.Task);
     // associations can be defined here
   };
