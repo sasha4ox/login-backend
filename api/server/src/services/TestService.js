@@ -3,7 +3,8 @@ import database from '../models';
 class TestService {
     static async getAllTests() {
         try {
-            return await database.Test.findAll();
+            return await database.Test.findAll({
+            });
         } catch (error) {
             throw error;
         }
@@ -38,7 +39,8 @@ class TestService {
         try {
             const theTest = await database.Test.findOne({
                 where: { id: Number(id) }
-            });
+            },
+            );
 
             return theTest;
         } catch (error) {

@@ -49,4 +49,4 @@ sequelize db:migrate
 Revert all migrations
 ```sh
 sequelize db:migrate:undo
-```
+``` 
