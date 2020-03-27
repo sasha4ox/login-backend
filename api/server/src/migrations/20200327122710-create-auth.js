@@ -1,17 +1,17 @@
+
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    console.info('creating test');
-    return queryInterface.createTable('Tests', {
+    return queryInterface.createTable('auths', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      title: {
+      email: {
         type: Sequelize.STRING,
       },
-      description: {
+      password: {
         type: Sequelize.STRING,
       },
       createdAt: {
@@ -25,6 +25,6 @@ module.exports = {
     });
   },
   down: queryInterface => {
-    return queryInterface.dropTable('Tests');
+    return queryInterface.dropTable('auths');
   },
 };

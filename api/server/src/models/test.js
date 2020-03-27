@@ -1,25 +1,15 @@
-import noop from 'lodash/noop';
 
 module.exports = (sequelize, DataTypes) => {
-  const Test = sequelize.define(
-    'Test',
+  const test = sequelize.define(
+    'test',
     {
-      title: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      description: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      age: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-      },
-    }, {});
-  Test.associate = function (models) {
-    Test.hasMany(models.Task);
+      book: DataTypes.STRING,
+    },
+    {},
+  );
+  test.associate = function(models) {
+    test.belongsTo(models.auth);
     // associations can be defined here
   };
-  return Test;
+  return test;
 };
