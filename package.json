@@ -13,9 +13,11 @@
   "author": "ET",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^4.0.1",
     "body-parser": "~1.19.0",
     "dotenv": "~8.2.0",
     "express": "~4.17.1",
+    "jsonwebtoken": "^8.5.1",
     "lodash": "~4.17.15",
     "path": "0.12.7",
     "pg": "~7.18.2",

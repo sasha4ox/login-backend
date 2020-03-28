@@ -4,45 +4,21 @@ class AuthService {
   static getAllAuths() {
     return database.auth.findAll();
   }
+  // static addTest(newTest) {
+  //   return database.Test.create(newTest);
+  // }
 
-  //   static addTest(newTest) {
-  //     return database.Test.create(newTest);
-  //   }
+  static async getAUser(email) {
+    const theUser = await database.auth.findOne({
+      where: { email },
+    });
 
-  //   static async updateTest(id, updateTest) {
-  //     const testToUpdate = await database.Test.findOne({
-  //       where: { id: Number(id) },
-  //     });
+    return theUser;
+  }
 
-  //     if (testToUpdate) {
-  //       await database.Test.update(updateTest, { where: { id: Number(id) } });
-
-  //       return updateTest;
-  //     }
-  //     return null;
-  //   }
-
-  //   static async getATest(id) {
-  //     const theTest = await database.Test.findOne({
-  //       where: { id: Number(id) },
-  //     });
-
-  //     return theTest;
-  //   }
-
-  //   static async deleteTest(id) {
-  //     const testToDelete = await database.Test.findOne({
-  //       where: { id: Number(id) },
-  //     });
-
-  //     if (testToDelete) {
-  //       const deletedTest = await database.Test.destroy({
-  //         where: { id: Number(id) },
-  //       });
-  //       return deletedTest;
-  //     }
-  //     return null;
-  //   }
+  static addUser(newUser) {
+    return database.auth.create(newUser);
+  }
 }
 
 export default AuthService;
