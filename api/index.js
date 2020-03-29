@@ -11,16 +11,17 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use(function(request, response, next) {
-  response.header('Access-Control-Allow-Origin', 'http://localhost:3000');
-  response.header(
-    'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept',
-  );
-  next();
-});
+// app.use();
 const port = process.env.PORT || 8080;
-app.use('/api', AuthRoutes);
+app.use(
+  '/api',
+  function(request, response, next) {
+    response.header('Access-Control-Allow-Origin', '*');
+    response.header('Access-Control-Allow-Headers', '*');
+    next();
+  },
+  AuthRoutes,
+);
 app.use('/api/v1/test', testRoutes);
 
 // when a random route is inputed

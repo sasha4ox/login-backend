@@ -36,28 +36,29 @@ class AuthController {
       if (!theUser) {
         util.setError(404, `Cannot find User with the email ${email}`);
         return util.send(response);
-      } if (!isPasswordValid) {
+      }
+      if (!isPasswordValid) {
         util.setError(404, `Your password is incorrect, sorry`);
         return util.send(response);
-      } 
-        jwt.sign(
-          { user: theUser.dataValues },
-          process.env.SECRET_KEY,
-          (error, token) => {
-            if (error) {
-              util.setError(403, error);
-              return util.send(response);
-            }
-            const data = {
-              ...theUser.dataValues,
-              token,
-            };
-            console.log('hi there222222222222', data);
-            util.setSuccess(200, 'Yay, you are loged in', data);
+      }
+      jwt.sign(
+        { user: theUser.dataValues },
+        process.env.SECRET_KEY,
+        { expiresIn: '1h' },
+        (error, token) => {
+          if (error) {
+            util.setError(403, error);
             return util.send(response);
-          },
-        );
-      
+          }
+          const data = {
+            ...theUser.dataValues,
+            token,
+          };
+          console.log('hi there222222222222', data);
+          util.setSuccess(200, 'Yay, you are loged in', data);
+          return util.send(response);
+        },
+      );
     } catch (error) {
       util.setError(404, error);
       return util.send(response);
@@ -88,6 +89,7 @@ class AuthController {
       jwt.sign(
         { user: createdUser.dataValues },
         process.env.SECRET_KEY,
+        { expiresIn: '1h' },
         (error, token) => {
           if (error) {
             util.setError(403, error);
@@ -97,7 +99,6 @@ class AuthController {
             ...createdUser.dataValues,
             token,
           };
-          console.log('hi there222222222222', data);
           util.setSuccess(
             200,
             'Yay, you are created an account and you are loged in',
