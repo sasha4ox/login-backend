@@ -23,22 +23,24 @@ class AuthController {
   }
 
   static async login(request, response) {
-    // const { id } = request.params;
     const { email, password } = request.body;
-    console.log(email);
     if (!email) {
       util.setError(400, 'Incorect mail');
       return util.send(response);
     }
+
+    console.log(email);
     try {
       const theUser = await AuthService.getAUser(email);
-      const isPasswordValid = bcrypt.compareSync(password, theUser.password);
       if (!theUser) {
         util.setError(404, `Cannot find User with the email ${email}`);
+        console.log('sdsa');
         return util.send(response);
       }
+      const isPasswordValid = bcrypt.compareSync(password, theUser.password);
+
       if (!isPasswordValid) {
-        util.setError(404, `Your password is incorrect, sorry`);
+        util.setError(401, `Your password is incorrect, sorry`);
         return util.send(response);
       }
       jwt.sign(
