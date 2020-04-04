@@ -3,6 +3,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import AuthRoutes from './server/src/routes/AuthRoutes';
 import testRoutes from './server/src/routes/TestRoutes';
+import VerifyingRoutes from './server/src/routes/VerifyingRoutes';
 
 config.config();
 
@@ -21,6 +22,15 @@ app.use(
     next();
   },
   AuthRoutes,
+);
+app.use(
+  '/api/verifying',
+  function(request, response, next) {
+    response.header('Access-Control-Allow-Origin', '*');
+    response.header('Access-Control-Allow-Headers', '*');
+    next();
+  },
+  VerifyingRoutes,
 );
 app.use('/api/v1/test', testRoutes);
 

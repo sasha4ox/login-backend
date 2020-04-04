@@ -6,7 +6,7 @@ import Util from '../utils/Utils';
 require('dotenv').config();
 
 const util = new Util();
-const secretKey = 'verySecretKey';
+// const secretKey = 'verySecretKey'
 class AuthController {
   static async getAllAuths(request, response) {
     try {
@@ -27,7 +27,7 @@ class AuthController {
   static async someRoute(request, response) {
     const token = request.headers.authorization;
 
-    const decoded = jwt.verify(token, secretKey);
+    const decoded = jwt.verify(token, process.env.SECRET_KEY);
     console.log(decoded);
     util.setSuccess(200, 'dsdsds');
     return util.send(response);
@@ -64,7 +64,7 @@ class AuthController {
       }
       jwt.sign(
         { user: theUser.dataValues },
-        secretKey,
+        process.env.SECRET_KEY,
         { expiresIn: '1h' },
         (error, token) => {
           if (error) {
@@ -109,7 +109,7 @@ class AuthController {
       const createdUser = await AuthService.addUser(newUser);
       jwt.sign(
         { user: createdUser.dataValues },
-        secretKey,
+        process.env.SECRET_KEY,
         { expiresIn: '1h' },
         (error, token) => {
           if (error) {
