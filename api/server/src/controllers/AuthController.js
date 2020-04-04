@@ -71,6 +71,7 @@ class AuthController {
             util.setError(500, error);
             return util.send(response);
           }
+          console.log('USER:', theUser.dataValues);
           const data = {
             ...theUser.dataValues,
             token,

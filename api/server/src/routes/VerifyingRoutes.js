@@ -3,5 +3,5 @@ import VerifyingController from '../controllers/VerifyingController';
 
 const router = Router();
 
-router.route('/').post(VerifyingController.verifying);
+router.route('/').get(VerifyingController.verifying);
 export default router;
