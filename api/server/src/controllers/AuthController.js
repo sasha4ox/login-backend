@@ -79,7 +79,7 @@ class AuthController {
         },
       );
     } catch (error) {
-      util.setError(404, error);
+      util.setError(404, 'what is it?');
       return util.send(response);
     }
   }
