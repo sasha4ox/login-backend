@@ -22,10 +22,26 @@ class AuthController {
     }
   }
 
+  static async someRoute(request, response) {
+    const token = request.headers.authorization;
+
+    const decoded = jwt.verify(token, process.env.SECRET_KEY);
+    console.log(decoded);
+    util.setSuccess(200, 'dsdsds');
+    return util.send(response);
+  }
+
+  static async someRoutePost(request, response) {
+    // console.log(request.query);
+    console.log(request.headers.authorization);
+    util.setSuccess(200, 'dsdsds');
+    return util.send(response);
+  }
+
   static async login(request, response) {
     const { email, password } = request.body;
     if (!email) {
-      util.setError(400, 'Incorect mail');
+      util.setError(401, 'Invalid mail');
       return util.send(response);
     }
 
@@ -33,10 +49,11 @@ class AuthController {
     try {
       const theUser = await AuthService.getAUser(email);
       if (!theUser) {
-        util.setError(404, `Cannot find User with the email ${email}`);
+        util.setError(401, `Cannot find User with the email ${email}`);
         console.log('sdsa');
         return util.send(response);
       }
+
       const isPasswordValid = bcrypt.compareSync(password, theUser.password);
 
       if (!isPasswordValid) {
@@ -49,7 +66,7 @@ class AuthController {
         { expiresIn: '1h' },
         (error, token) => {
           if (error) {
-            util.setError(403, error);
+            util.setError(500, error);
             return util.send(response);
           }
           const data = {
@@ -70,7 +87,7 @@ class AuthController {
   static async registration(request, response) {
     if (!request.body.email || !request.body.password) {
       util.setError(
-        400,
+        401,
         'Bro, please check your email and password. They looks invalid',
       );
       return util.send(response);
@@ -79,7 +96,7 @@ class AuthController {
     try {
       const isUserRegistered = await AuthService.getAUser(newUser.email);
       if (isUserRegistered) {
-        util.setError(409, 'User with your email is registered');
+        util.setError(401, 'User with your email is registered');
         return util.send(response);
       }
       const hashPassword = bcrypt.hashSync(newUser.password, 10);
@@ -94,7 +111,7 @@ class AuthController {
         { expiresIn: '1h' },
         (error, token) => {
           if (error) {
-            util.setError(403, error);
+            util.setError(500, error);
             return util.send(response);
           }
           const data = {
@@ -102,7 +119,7 @@ class AuthController {
             token,
           };
           util.setSuccess(
-            200,
+            201,
             'Yay, you are created an account and you are loged in',
             data,
           );
