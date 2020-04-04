@@ -3,8 +3,10 @@ import bcrypt from 'bcrypt';
 import AuthService from '../services/AuthService';
 import Util from '../utils/Utils';
 
-const util = new Util();
+require('dotenv').config();
 
+const util = new Util();
+// const secretKey = 'verySecretKey'
 class AuthController {
   static async getAllAuths(request, response) {
     try {
