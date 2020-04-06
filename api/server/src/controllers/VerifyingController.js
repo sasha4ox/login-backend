@@ -8,19 +8,16 @@ const util = new Util();
 class VerifyingController {
   static verifying(request, response) {
     const headerAuth = request.headers.authorization;
-    // console.log('auth:', headerAuth);
     const token = _split(headerAuth, ' ')[1];
     if (!token) {
       util.setError(401, 'you need token');
       return util.send(response);
     }
-    console.log(token);
     jwt.verify(token, process.env.SECRET_KEY, function(error, decoded) {
       if (error) {
         util.setError(401, error);
         return util.send(response);
       }
-      console.log('decodeD', decoded);
       jwt.sign(
         { user: decoded.user },
         process.env.SECRET_KEY,

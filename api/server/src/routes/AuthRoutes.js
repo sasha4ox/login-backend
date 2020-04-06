@@ -5,7 +5,7 @@ const router = Router();
 
 router
   .route('/login')
-  .get(AuthController.getAllAuths)
+  .get(AuthController.getUsers)
   .post(AuthController.login);
 router.route('/registration').post(AuthController.registration);
 export default router;

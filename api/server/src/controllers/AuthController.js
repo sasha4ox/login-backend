@@ -8,9 +8,9 @@ require('dotenv').config();
 const util = new Util();
 // const secretKey = 'verySecretKey'
 class AuthController {
-  static async getAllAuths(request, response) {
+  static async getUsers(request, response) {
     try {
-      const allAuth = await AuthService.getAllAuths();
+      const allAuth = await AuthService.getUsers();
       console.log(allAuth);
       if (allAuth.length > 0) {
         util.setSuccess(200, 'Auth retrieved', allAuth);
@@ -24,22 +24,6 @@ class AuthController {
     }
   }
 
-  static async someRoute(request, response) {
-    const token = request.headers.authorization;
-
-    const decoded = jwt.verify(token, process.env.SECRET_KEY);
-    console.log(decoded);
-    util.setSuccess(200, 'dsdsds');
-    return util.send(response);
-  }
-
-  static async someRoutePost(request, response) {
-    // console.log(request.query);
-    console.log(request.headers.authorization);
-    util.setSuccess(200, 'dsdsds');
-    return util.send(response);
-  }
-
   static async login(request, response) {
     const { email, password } = request.body;
     if (!email) {
@@ -47,7 +31,6 @@ class AuthController {
       return util.send(response);
     }
 
-    console.log(email);
     try {
       const theUser = await AuthService.getAUser(email);
       if (!theUser) {
@@ -71,7 +54,6 @@ class AuthController {
             util.setError(500, error);
             return util.send(response);
           }
-          console.log('USER:', theUser.dataValues);
           const data = {
             ...theUser.dataValues,
             token,

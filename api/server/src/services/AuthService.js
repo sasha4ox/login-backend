@@ -1,7 +1,7 @@
 import database from '../models';
 
 class AuthService {
-  static getAllAuths() {
+  static getUsers() {
     return database.auth.findAll();
   }
 
