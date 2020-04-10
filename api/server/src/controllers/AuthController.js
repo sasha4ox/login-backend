@@ -1,7 +1,9 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import { validationResult } from 'express-validator';
 import AuthService from '../services/AuthService';
 import Util from '../utils/Utils';
+import sendingMail from '../utils/mail';
 
 require('dotenv').config();
 
@@ -11,7 +13,7 @@ class AuthController {
   static async getUsers(request, response) {
     try {
       const allAuth = await AuthService.getUsers();
-      console.log(allAuth);
+      // console.log(allAuth);
       if (allAuth.length > 0) {
         util.setSuccess(200, 'Auth retrieved', allAuth);
       } else {
@@ -25,20 +27,50 @@ class AuthController {
   }
 
   static async login(request, response) {
+    const errors = validationResult(request);
     const { email, password } = request.body;
-    if (!email) {
-      util.setError(401, 'Invalid mail');
+    if (!errors.isEmpty()) {
+      util.setError(
+        401,
+        'Please, check your email and password. They looks invalid',
+      );
       return util.send(response);
     }
 
     try {
       const theUser = await AuthService.getAUser(email);
       if (!theUser) {
-        util.setError(401, `Cannot find User with the email ${email}`);
-        console.log('sdsa');
+        util.setError(
+          401,
+          `Cannot find user with the Email :  ${email}. You should register.`,
+        );
         return util.send(response);
       }
-
+      if (!theUser.dataValues.confirmed && theUser) {
+        jwt.sign(
+          { user: theUser.dataValues },
+          process.env.SECRET_KEY,
+          { expiresIn: '1h' },
+          (error, token) => {
+            if (error) {
+              util.setError(500, error);
+              return util.send(response);
+            }
+            sendingMail(`${email}`, `${token}`, sendError => {
+              if (sendError) {
+                util.setError(500, sendError);
+                return util.send(response);
+              }
+              util.setError(
+                403,
+                `Email: ${email} is not verified, we sand a letter to your email. Please check your mail for confirmation`,
+              );
+              return util.send(response);
+            });
+          },
+        );
+        return;
+      }
       const isPasswordValid = bcrypt.compareSync(password, theUser.password);
 
       if (!isPasswordValid) {
@@ -58,7 +90,6 @@ class AuthController {
             ...theUser.dataValues,
             token,
           };
-          console.log('hi there222222222222', data);
           util.setSuccess(200, 'Yay, you are loged in', data);
           return util.send(response);
         },
@@ -70,10 +101,11 @@ class AuthController {
   }
 
   static async registration(request, response) {
-    if (!request.body.email || !request.body.password) {
+    const errors = validationResult(request);
+    if (!errors.isEmpty()) {
       util.setError(
         401,
-        'Bro, please check your email and password. They looks invalid',
+        'Please,check your email and password. They looks invalid',
       );
       return util.send(response);
     }
@@ -90,6 +122,8 @@ class AuthController {
         password: hashPassword,
       };
       const createdUser = await AuthService.addUser(newUser);
+      console.log(createdUser.dataValues);
+
       jwt.sign(
         { user: createdUser.dataValues },
         process.env.SECRET_KEY,
@@ -99,16 +133,17 @@ class AuthController {
             util.setError(500, error);
             return util.send(response);
           }
-          const data = {
-            ...createdUser.dataValues,
-            token,
-          };
-          util.setSuccess(
-            201,
-            'Yay, you are created an account and you are loged in',
-            data,
-          );
-          return util.send(response);
+
+          sendingMail(`${newUser.email}`, `${token}`, sendError => {
+            if (sendError) {
+              util.setError(500, sendError);
+              console.log('WHATWHAT,', token);
+              return util.send(response);
+            }
+            console.log('WHAT,', token);
+            util.setError(403, 'Please check your mail for confirmation');
+            return util.send(response);
+          });
         },
       );
     } catch (error) {

@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import _split from 'lodash/split';
+
 import Util from '../utils/Utils';
 
 require('dotenv').config();
@@ -7,10 +7,9 @@ require('dotenv').config();
 const util = new Util();
 class VerifyingController {
   static verifying(request, response) {
-    const headerAuth = request.headers.authorization;
-    const token = _split(headerAuth, ' ')[1];
+    const token = request.token;
     if (!token) {
-      util.setError(401, 'you need token');
+      util.setError(401, 'you need a token');
       return util.send(response);
     }
     jwt.verify(token, process.env.SECRET_KEY, function(error, decoded) {

@@ -9,7 +9,6 @@ class AuthService {
     const theUser = await database.auth.findOne({
       where: { email },
     });
-
     return theUser;
   }
 
