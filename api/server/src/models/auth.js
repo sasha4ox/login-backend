@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     {},
   );
   auth.associate = function(models) {
-    auth.hasMany(models.test);
+    auth.hasMany(models.photo);
     // associations can be defined here
   };
   return auth;

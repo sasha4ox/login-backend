@@ -8,7 +8,7 @@ import sendingMail from '../utils/mail';
 require('dotenv').config();
 
 const util = new Util();
-// const secretKey = 'verySecretKey'
+
 class AuthController {
   static async getUsers(request, response) {
     try {
@@ -77,6 +77,8 @@ class AuthController {
         util.setError(401, `Your password is incorrect, sorry`);
         return util.send(response);
       }
+      const userPhotos = await AuthService.getPhotos(email);
+
       jwt.sign(
         { user: theUser.dataValues },
         process.env.SECRET_KEY,
@@ -86,9 +88,17 @@ class AuthController {
             util.setError(500, error);
             return util.send(response);
           }
-          const data = {
+          let data;
+          if (userPhotos.length === 0) {
+            data = {
+              ...theUser.dataValues,
+              token,
+            };
+          }
+          data = {
             ...theUser.dataValues,
             token,
+            photos: userPhotos,
           };
           util.setSuccess(200, 'Yay, you are loged in', data);
           return util.send(response);
