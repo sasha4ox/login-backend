@@ -23,9 +23,16 @@ class UserService {
     return photos;
   }
 
-  static async getUser(email) {
+  static async getUserByEmail(email) {
     const user = await database.auth.findOne({
       where: { email },
+    });
+    return user;
+  }
+
+  static async getUserById(id) {
+    const user = await database.auth.findOne({
+      where: { id: Number(id) },
     });
     return user;
   }

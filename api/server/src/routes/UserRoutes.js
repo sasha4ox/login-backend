@@ -5,5 +5,6 @@ const router = Router();
 
 router.route('/:id').put(UserController.updateUser);
 router.route('/').get(UserController.getUserProfile);
+router.route('/password/:id').put(UserController.changePassword);
 
 export default router;
