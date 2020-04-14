@@ -147,7 +147,6 @@ class AuthController {
           sendingMail(`${newUser.email}`, `${token}`, sendError => {
             if (sendError) {
               util.setError(500, sendError);
-              console.log('WHATWHAT,', token);
               return util.send(response);
             }
             console.log('WHAT,', token);

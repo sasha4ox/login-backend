@@ -55,7 +55,7 @@ class UserController {
       if (!updateUser) {
         util.setError(404, `Cannot find user with the id: ${id}`);
       } else {
-        util.setSuccess(200, 'User updated', updateUser);
+        util.setSuccess(200, 'Your info updated', updateUser);
       }
       return util.send(response);
     } catch (error) {
@@ -86,7 +86,7 @@ class UserController {
         return util.send(response);
       }
       if (newPassword !== newPassword2) {
-        util.setError(403, `New password incorrect`);
+        util.setError(403, `New password is incorrect`);
         return util.send(response);
       }
       const hashPassword = bcrypt.hashSync(newPassword, 10);
@@ -99,7 +99,7 @@ class UserController {
         util.setError(404, `Cannot find user with the id: ${id}`);
         return util.send(response);
       }
-      util.setSuccess(200, 'User updated', updateUser);
+      util.setSuccess(200, 'Password updated', updateUser);
       return util.send(response);
     } catch (error) {
       util.setError(500, error);
