@@ -20,6 +20,8 @@
   "author": "ET",
   "license": "ISC",
   "dependencies": {
+    "@babel/core": "^7.9.0",
+    "@babel/preset-env": "^7.8.7",
     "@babel/cli": "~7.8.4",
     "@babel/node": "~7.8.7",
     "@babel/plugin-transform-runtime": "~7.8.3",
@@ -44,8 +46,6 @@
     "sequelize-cli": "^5.5.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.9.0",
-    "@babel/preset-env": "^7.8.7",
     "babel-eslint": "~10.1.0",
     "babel-loader": "~8.0.6",
     "chai": "~4.2.0",
