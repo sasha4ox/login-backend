@@ -1,7 +1,7 @@
 import config from 'dotenv';
 import express from 'express';
 import bodyParser from 'body-parser';
-import { check } from 'express-validator';
+
 import cors from 'cors';
 import fileUpload from 'express-fileupload';
 import AuthRoutes from './server/src/routes/AuthRoutes';
@@ -16,9 +16,6 @@ import Guard from './server/src/middleware/Guard';
 config.config();
 
 const app = express();
-function validationCreator() {
-  return [check('email').isEmail(), check('password').isLength({ min: 5 })];
-}
 
 app.use(
   fileUpload({
@@ -31,7 +28,7 @@ app.use(cors());
 
 const port = process.env.PORT || 8080;
 
-app.use('/api/', validationCreator(), AuthRoutes);
+app.use('/api/', AuthRoutes);
 app.use('/api/verifying', getToken, VerifyingRoutes);
 app.use('/api/user', getToken, UserRoutes);
 app.use('/api/confirmation', getToken, ConfirmationEmail);

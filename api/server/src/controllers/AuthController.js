@@ -1,6 +1,8 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { validationResult } from 'express-validator';
+import get from 'lodash/get';
+import nodeFetch from 'node-fetch';
 import AuthService from '../services/AuthService';
 import Util from '../utils/Utils';
 import sendingMail from '../utils/mail';
@@ -28,6 +30,7 @@ class AuthController {
 
   static async login(request, response) {
     const errors = validationResult(request);
+
     const { email, password } = request.body;
     if (!errors.isEmpty()) {
       util.setError(
@@ -113,10 +116,7 @@ class AuthController {
   static async registration(request, response) {
     const errors = validationResult(request);
     if (!errors.isEmpty()) {
-      util.setError(
-        401,
-        'Please,check your email and password. They looks invalid',
-      );
+      util.setError(401, 'Please, check your fields. They looks invalid');
       return util.send(response);
     }
     let newUser = request.body;
@@ -132,8 +132,22 @@ class AuthController {
         password: hashPassword,
       };
       const createdUser = await AuthService.addUser(newUser);
-      console.log(createdUser.dataValues);
+      // FOR CHAT
+      const dataToChat = {
+        id: get(createdUser, 'dataValues.id'),
+        email: get(createdUser, 'dataValues.email'),
+        fullname: get(createdUser, 'dataValues.userName'),
+        avatar: null,
+      };
 
+      nodeFetch('https://ves-2020-chat-api.herokuapp.com/api/user', {
+        method: 'POST',
+        body: JSON.stringify(dataToChat),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      // FOR CHAT
       jwt.sign(
         { user: createdUser.dataValues },
         process.env.SECRET_KEY,
@@ -149,7 +163,6 @@ class AuthController {
               util.setError(500, sendError);
               return util.send(response);
             }
-            console.log('WHAT,', token);
             util.setError(403, 'Please check your mail for confirmation');
             return util.send(response);
           });
