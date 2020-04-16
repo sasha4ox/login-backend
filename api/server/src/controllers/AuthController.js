@@ -16,13 +16,13 @@ class AuthController {
     try {
       const allAuth = await AuthService.getUsers();
       if (allAuth.length > 0) {
-        util.setSuccess(200, 'Auth retrieved', allAuth);
+        util.setSuccess(200, 'Users received', allAuth);
       } else {
-        util.setSuccess(200, 'No auth found');
+        util.setSuccess(200, 'No users found');
       }
       return util.send(response);
     } catch (error) {
-      util.setError(400, error);
+      util.setError(500, error);
       return util.send(response);
     }
   }
@@ -43,7 +43,7 @@ class AuthController {
       const theUser = await AuthService.getAUser(email);
       if (!theUser) {
         util.setError(
-          401,
+          404,
           `Cannot find user with the Email :  ${email}. You should register.`,
         );
         return util.send(response);
@@ -107,7 +107,7 @@ class AuthController {
         },
       );
     } catch (error) {
-      util.setError(404, 'what is it?');
+      util.setError(500, 'Something went wrong');
       return util.send(response);
     }
   }
@@ -168,7 +168,7 @@ class AuthController {
         },
       );
     } catch (error) {
-      util.setError(400, error.message);
+      util.setError(500, error.message);
       return util.send(response);
     }
   }

@@ -8,33 +8,16 @@ function Guard(request, response, next) {
   const token = request.token;
   if (!token) {
     request.userData = null;
-    next();
+    util.setError(401, 'You are not verified');
+    return util.send(response);
   }
   jwt.verify(token, process.env.SECRET_KEY, function(error, decoded) {
     if (error) {
       util.setError(401, error);
       return util.send(response);
     }
-
     request.userData = decoded.user;
     next();
-    //   jwt.sign(
-    //     { user: decoded.user },
-    //     process.env.SECRET_KEY,
-    //     { expiresIn: '1h' },
-    //     (tokenError, newToken) => {
-    //       if (tokenError) {
-    //         util.setError(500, tokenError);
-    //         return util.send(response);
-    //       }
-    //       const data = {
-    //         ...decoded.user,
-    //         newToken,
-    //       };
-    //       util.setSuccess(200, 'you are verified', data);
-    //       return util.send(response);
-    //     },
-    //   );
   });
 }
 export default Guard;

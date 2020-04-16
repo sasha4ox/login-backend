@@ -30,7 +30,7 @@ class VerifyingController {
             ...decoded.user,
             newToken,
           };
-          util.setSuccess(200, 'you are verified', data);
+          util.setSuccess(200, 'You are verified', data);
           return util.send(response);
         },
       );

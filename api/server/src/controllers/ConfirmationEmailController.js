@@ -7,7 +7,7 @@ class ConfirmationEmailController {
   static confirmation(request, response) {
     const { token } = request;
     if (!token) {
-      util.setError(401, 'you need a token');
+      util.setError(401, 'You are not verified');
       return util.send(response);
     }
     jwt.verify(token, process.env.SECRET_KEY, async (error, decoded) => {

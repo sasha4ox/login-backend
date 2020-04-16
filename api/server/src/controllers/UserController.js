@@ -86,7 +86,7 @@ class UserController {
         return util.send(response);
       }
       if (newPassword !== newPassword2) {
-        util.setError(403, `New password is incorrect`);
+        util.setError(401, `New password is incorrect`);
         return util.send(response);
       }
       const hashPassword = bcrypt.hashSync(newPassword, 10);
