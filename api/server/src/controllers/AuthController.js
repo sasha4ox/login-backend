@@ -15,7 +15,6 @@ class AuthController {
   static async getUsers(request, response) {
     try {
       const allAuth = await AuthService.getUsers();
-      // console.log(allAuth);
       if (allAuth.length > 0) {
         util.setSuccess(200, 'Auth retrieved', allAuth);
       } else {
@@ -66,7 +65,7 @@ class AuthController {
               }
               util.setError(
                 403,
-                `Email: ${email} is not verified, we sand a letter to your email. Please check your mail for confirmation`,
+                `Email: ${email} is not verified, we sent to your email a letter. Please, check your mail for confirmation`,
               );
               return util.send(response);
             });
@@ -147,7 +146,7 @@ class AuthController {
           'Content-Type': 'application/json',
         },
       });
-      // FOR CHAT
+      // FOR CHAT END
       jwt.sign(
         { user: createdUser.dataValues },
         process.env.SECRET_KEY,
