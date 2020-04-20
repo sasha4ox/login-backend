@@ -1,13 +1,28 @@
 import _map from 'lodash/map';
+import Sequelize from 'sequelize';
 import database from '../models';
 
+const Op = Sequelize.Op;
 class UserService {
-  static async getUserPhotos(email) {
+  static async getUsers(offset, limit, email) {
+    const users = await database.auth.findAll({
+      where: { email: { [Op.like]: `%${  email  }%` } },
+      order: ['id'],
+      offset,
+      limit,
+    });
+    const count = await database.auth.count({
+      where: { email: { [Op.like]: `%${  email  }%` } },
+    });
+    return [users, count];
+  }
+
+  static async getUserPhotos(id) {
     const photosBase = await database.photo.findAll({
       include: {
         model: database.auth,
         where: {
-          email,
+          id: Number(id),
         },
       },
     });
@@ -19,15 +34,8 @@ class UserService {
         imageLink: item.dataValues.imageLink,
       };
     });
-    console.log('SERVICE PHOTO:', photos);
-    return photos;
-  }
 
-  static async getUserByEmail(email) {
-    const user = await database.auth.findOne({
-      where: { email },
-    });
-    return user;
+    return photos;
   }
 
   static async getUserById(id) {

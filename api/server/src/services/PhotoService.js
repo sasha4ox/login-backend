@@ -8,5 +8,13 @@ class PhotoService {
       authId: userId,
     });
   }
+
+  static async addPhotoToAuth(id, photo) {
+    const updatedInfo = await database.auth.update(
+      { currentImage: photo },
+      { where: { id: Number(id) } },
+    );
+    return updatedInfo;
+  }
 }
 export default PhotoService;

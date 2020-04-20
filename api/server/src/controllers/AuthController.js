@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { validationResult } from 'express-validator';
 import get from 'lodash/get';
+import pickBy from 'lodash/pickBy';
 import nodeFetch from 'node-fetch';
 import AuthService from '../services/AuthService';
 import Util from '../utils/Utils';
@@ -48,9 +49,18 @@ class AuthController {
         );
         return util.send(response);
       }
-      if (!theUser.dataValues.confirmed && theUser) {
+      const userData = pickBy(
+        get(theUser, 'dataValues'),
+        (value, key) => key !== 'password',
+      );
+      if (!userData.isActive) {
+        util.setError(403, `Access denied. Contact to administrator.`);
+        return util.send(response);
+      }
+      if (!userData.confirmed) {
+        // If user not confirmed his email
         jwt.sign(
-          { user: theUser.dataValues },
+          { user: userData.id },
           process.env.SECRET_KEY,
           { expiresIn: '1h' },
           (error, token) => {
@@ -81,8 +91,9 @@ class AuthController {
       }
       const userPhotos = await AuthService.getPhotos(email);
 
+      console.log('dsdsdsdsds', userData);
       jwt.sign(
-        { user: theUser.dataValues },
+        { user: get(userData, 'id') },
         process.env.SECRET_KEY,
         { expiresIn: '1h' },
         (error, token) => {
@@ -91,14 +102,15 @@ class AuthController {
             return util.send(response);
           }
           let data;
+
           if (userPhotos.length === 0) {
             data = {
-              ...theUser.dataValues,
+              ...userData,
               token,
             };
           }
           data = {
-            ...theUser.dataValues,
+            ...userData,
             token,
             photos: userPhotos,
           };
@@ -148,7 +160,7 @@ class AuthController {
       });
       // FOR CHAT END
       jwt.sign(
-        { user: createdUser.dataValues },
+        { user: get(createdUser, 'dataValues.id') },
         process.env.SECRET_KEY,
         { expiresIn: '1h' },
         (error, token) => {

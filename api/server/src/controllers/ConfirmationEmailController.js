@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import get from 'lodash/get';
 import Util from '../utils/Utils';
 import ConfirmationEmailService from '../services/ConfirmationEmailService';
 
@@ -12,20 +13,20 @@ class ConfirmationEmailController {
     }
     jwt.verify(token, process.env.SECRET_KEY, async (error, decoded) => {
       if (error) {
-        util.setError(401, error);
+        util.setError(401, error.message);
         return util.send(response);
       }
-      const { email } = decoded.user;
-      await ConfirmationEmailService.confirmUser(email);
-      const theUser = await ConfirmationEmailService.getUser(email);
+      const id = get(decoded, 'user');
+      console.log(id);
+      await ConfirmationEmailService.confirmUser(id);
+      const theUser = await ConfirmationEmailService.getUser(id);
       if (!theUser.dataValues.confirmed) {
         util.setError(500, 'Something went wrong');
         return util.send(response);
       }
       util.setSuccess(200, 'Your email is confirmed');
-      setTimeout(() => {
-        return util.send(response);
-      }, 3000);
+
+      return util.send(response);
     });
   }
 }

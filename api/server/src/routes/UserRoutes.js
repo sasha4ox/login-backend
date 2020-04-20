@@ -3,8 +3,12 @@ import UserController from '../controllers/UserController';
 
 const router = Router();
 
-router.route('/:id').put(UserController.updateUser);
-router.route('/').get(UserController.getUserProfile);
-router.route('/password/:id').put(UserController.changePassword);
+router
+  .route('/:id')
+  .patch(UserController.updateUser)
+  .get(UserController.getUserProfile);
+router.route('/all/:params').get(UserController.getAllusers);
+// router.route('/all').post(UserController.searchUser);
+router.route('/password/:id').patch(UserController.changePassword);
 
 export default router;
