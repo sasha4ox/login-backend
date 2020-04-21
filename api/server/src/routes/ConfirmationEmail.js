@@ -3,5 +3,5 @@ import ConfirmationEmailController from '../controllers/ConfirmationEmailControl
 
 const router = Router();
 
-router.route('/').patch(ConfirmationEmailController.confirmation);
+router.route('/').get(ConfirmationEmailController.confirmation);
 export default router;

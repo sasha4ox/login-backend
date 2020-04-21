@@ -13,8 +13,7 @@ require('dotenv').config();
 
 const util = new Util();
 class UserController {
-  static async getAllusers(request, response) {
-    // const params = request.params.params.split('&');
+  static async searchUsers(request, response) {
     const parameters = _split(get(request, 'params.params'), '&');
     const offset = _split(parameters[0], '=')[1];
     const limit = _split(parameters[1], '=')[1];
