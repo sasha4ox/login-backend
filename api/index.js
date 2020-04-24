@@ -1,7 +1,6 @@
 import config from 'dotenv';
 import express from 'express';
 import bodyParser from 'body-parser';
-
 import cors from 'cors';
 import fileUpload from 'express-fileupload';
 import AuthRoutes from './server/src/routes/AuthRoutes';
@@ -10,6 +9,8 @@ import PhotoRoutes from './server/src/routes/PhotoRoutes';
 import VerifyingRoutes from './server/src/routes/VerifyingRoutes';
 import ConfirmationEmail from './server/src/routes/ConfirmationEmail';
 import UserRoutes from './server/src/routes/UserRoutes';
+import AdminRoutes from './server/src/routes/AdminRoutes';
+import AdminGuard from './server/src/middleware/AdminGuard';
 import getToken from './server/src/middleware/getToken';
 import Guard from './server/src/middleware/Guard';
 
@@ -31,6 +32,7 @@ const port = process.env.PORT || 8080;
 app.use('/api/', AuthRoutes);
 app.use('/api/verifying', getToken, VerifyingRoutes);
 app.use('/api/user', getToken, Guard, UserRoutes);
+app.use('/api/admin', getToken, Guard, AdminGuard, AdminRoutes);
 app.use('/api/confirmation', getToken, Guard, ConfirmationEmail);
 // app.use('/api/v1/test', testRoutes);
 app.use('/api/photo', getToken, Guard, PhotoRoutes);

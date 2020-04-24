@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
       role: DataTypes.STRING,
       isActive: DataTypes.BOOLEAN,
       currentImage: DataTypes.STRING,
+      blockedLinks: DataTypes.STRING,
     },
     {},
   );

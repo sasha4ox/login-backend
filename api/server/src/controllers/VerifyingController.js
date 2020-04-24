@@ -8,7 +8,7 @@ require('dotenv').config();
 
 const util = new Util();
 class VerifyingController {
-  static async verifyingUser(request, response) {
+  static verifyingUser(request, response) {
     const token = request.token;
     if (!token) {
       util.setError(401, 'You need a token');
@@ -23,6 +23,10 @@ class VerifyingController {
         const user = await VerifyingService.getUserById(decoded.user);
         if (!user) {
           util.setError(404, "Can't find user");
+          return util.send(response);
+        }
+        if (!user.isActive) {
+          util.setError(403, 'User is disactivated');
           return util.send(response);
         }
         const userData = pickBy(
@@ -44,10 +48,19 @@ class VerifyingController {
       util.setError(401, 'you need a token');
       return util.send(response);
     }
-    jwt.verify(token, process.env.SECRET_KEY, function(error, decoded) {
+    jwt.verify(token, process.env.SECRET_KEY, async function(error, decoded) {
       if (error) {
         util.setError(401, error);
-        return util.send(response.message);
+        return util.send(response);
+      }
+      const user = await VerifyingService.getUserById(decoded.user);
+      if (!user) {
+        util.setError(404, "Can't find user");
+        return util.send(response);
+      }
+      if (!user.isActive) {
+        util.setError(403, 'User id disactivated');
+        return util.send(response);
       }
       jwt.sign(
         { user: decoded.user },
@@ -58,7 +71,6 @@ class VerifyingController {
             util.setError(500, tokenError);
             return util.send(response);
           }
-          console.log('decoded', decoded.user);
           const data = {
             id: decoded.user,
             newToken,

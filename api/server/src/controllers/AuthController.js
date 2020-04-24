@@ -3,10 +3,14 @@ import bcrypt from 'bcrypt';
 import { validationResult } from 'express-validator';
 import get from 'lodash/get';
 import pickBy from 'lodash/pickBy';
+import isEmpty from 'lodash/isEmpty';
 import nodeFetch from 'node-fetch';
+import config from 'dotenv';
 import AuthService from '../services/AuthService';
 import Util from '../utils/Utils';
 import sendingMail from '../utils/mail';
+
+config.config();
 
 require('dotenv').config();
 
@@ -30,7 +34,6 @@ class AuthController {
 
   static async login(request, response) {
     const errors = validationResult(request);
-
     const { email, password } = request.body;
     if (!errors.isEmpty()) {
       util.setError(
@@ -41,7 +44,7 @@ class AuthController {
     }
 
     try {
-      const theUser = await AuthService.getAUser(email);
+      const theUser = await AuthService.getAUserByEmail(email);
       if (!theUser) {
         util.setError(
           404,
@@ -89,9 +92,7 @@ class AuthController {
         util.setError(401, `Your password is incorrect, sorry`);
         return util.send(response);
       }
-      const userPhotos = await AuthService.getPhotos(email);
-
-      console.log('dsdsdsdsds', userData);
+      const userPhotos = await AuthService.getPhotos(userData.id);
       jwt.sign(
         { user: get(userData, 'id') },
         process.env.SECRET_KEY,
@@ -103,7 +104,7 @@ class AuthController {
           }
           let data;
 
-          if (userPhotos.length === 0) {
+          if (isEmpty(userPhotos)) {
             data = {
               ...userData,
               token,
@@ -132,7 +133,7 @@ class AuthController {
     }
     let newUser = request.body;
     try {
-      const isUserRegistered = await AuthService.getAUser(newUser.email);
+      const isUserRegistered = await AuthService.getAUserByEmail(newUser.email);
       if (isUserRegistered) {
         util.setError(401, 'User with your email is registered');
         return util.send(response);
@@ -143,6 +144,10 @@ class AuthController {
         password: hashPassword,
       };
       const createdUser = await AuthService.addUser(newUser);
+      if (!createdUser) {
+        util.setError(500, 'Server error');
+        return util.send(response);
+      }
       // FOR CHAT
       const dataToChat = {
         id: get(createdUser, 'dataValues.id'),
@@ -150,8 +155,7 @@ class AuthController {
         fullname: get(createdUser, 'dataValues.userName'),
         avatar: null,
       };
-
-      nodeFetch('https://ves-2020-chat-api.herokuapp.com/api/user', {
+      nodeFetch(`${process.env.CHAT_SERVER}/user`, {
         method: 'POST',
         body: JSON.stringify(dataToChat),
         headers: {
@@ -159,19 +163,19 @@ class AuthController {
         },
       });
       // FOR CHAT END
+
       jwt.sign(
         { user: get(createdUser, 'dataValues.id') },
         process.env.SECRET_KEY,
         { expiresIn: '1h' },
         (error, token) => {
           if (error) {
-            util.setError(500, error);
+            util.setError(500, error.message);
             return util.send(response);
           }
-
           sendingMail(`${newUser.email}`, `${token}`, sendError => {
             if (sendError) {
-              util.setError(500, sendError);
+              util.setError(500, sendError.message);
               return util.send(response);
             }
             util.setError(403, 'Please check your mail for confirmation');

@@ -81,7 +81,13 @@ class UserController {
   }
 
   static async updateUser(request, response) {
-    const { id } = request.params;
+    const { id } = get(request, 'params');
+    const userRequestId = get(request, 'userData');
+    console.log(request);
+    if (id === userRequestId) {
+      /* user update info yourself? */
+    }
+    console.log(userRequestId, id);
     const dataToUpdate = request.body;
 
     try {

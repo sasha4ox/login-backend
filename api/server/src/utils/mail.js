@@ -2,6 +2,7 @@ import nodemailer from 'nodemailer';
 import config from 'dotenv';
 
 config.config();
+
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
   port: 465,
@@ -27,9 +28,8 @@ const sendingMail = (emailTo, token, callback) => {
   transporter.sendMail(mailOptions, (error, data) => {
     if (error) {
       return callback(error, error);
-    } 
-      return callback(null, data);
-    
+    }
+    return callback(null, data);
   });
 };
 export default sendingMail;

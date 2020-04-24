@@ -23,7 +23,7 @@ class PhotoController {
         return util.send(response);
       }
       await PhotoService.addPhotoToAuth(id, data.url);
-      util.setSuccess(201, 'Photo uploaded', newPhoto.dataValues);
+      util.setSuccess(201, 'Photo uploaded', newPhoto);
       return util.send(response);
     });
 

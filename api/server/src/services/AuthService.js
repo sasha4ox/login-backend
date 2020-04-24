@@ -6,28 +6,27 @@ class AuthService {
     return database.auth.findAll();
   }
 
-  static async getPhotos(email) {
+  static async getPhotos(id) {
     const photosBase = await database.photo.findAll({
       include: {
         model: database.auth,
         where: {
-          email,
+          id: Number(id),
         },
       },
     });
 
     const photos = _map(photosBase, item => {
       return {
-        id: item.dataValues.id,
-        publickId: item.dataValues.publickId,
-        imageLink: item.dataValues.imageLink,
+        id: item.id,
+        publickId: item.publickId,
+        imageLink: item.imageLink,
       };
     });
-    console.log('SERVICE PHOTO:', photos);
     return photos;
   }
 
-  static async getAUser(email) {
+  static async getAUserByEmail(email) {
     const user = await database.auth.findOne({
       where: { email },
     });
