@@ -6,11 +6,13 @@ import _split from 'lodash/split';
 import AdminService from '../services/AdminService';
 import Util from '../utils/Utils';
 
+// TODO: this shouldn't be called more than once, it's already been called in src/index.js
 require('dotenv').config();
 
 const util = new Util();
 class AdminController {
   static async searchUsers(request, response) {
+    //TODO: bad idea, if any of params will change order, your app will behave differently. Consider using named params instead
     const parameters = _split(get(request, 'params.params'), '&');
     const offset = _split(parameters[0], '=')[1];
     const limit = _split(parameters[1], '=')[1];

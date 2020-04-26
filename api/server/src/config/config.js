@@ -6,7 +6,7 @@ module.exports = {
   //   use_env_variable: 'DATABASE_URL'
   // },
   //
-
+  // TODO: development config should be described here without using .env
   development: {
     database: process.env.DB_NAME,
     username: process.env.DB_USER,

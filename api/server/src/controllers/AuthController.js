@@ -9,7 +9,7 @@ import config from 'dotenv';
 import AuthService from '../services/AuthService';
 import Util from '../utils/Utils';
 import sendingMail from '../utils/mail';
-
+// TODO: Same issue with the config here, but doubled for some reason
 config.config();
 
 require('dotenv').config();
@@ -64,6 +64,7 @@ class AuthController {
         // If user not confirmed his email
         jwt.sign(
           { user: userData.id },
+          // TODO: this should be referring to the config instead. Avoid using process.env implicitly outside of config
           process.env.SECRET_KEY,
           { expiresIn: '1h' },
           (error, token) => {

@@ -64,6 +64,7 @@ class VerifyingController {
       }
       jwt.sign(
         { user: decoded.user },
+        // TODO: should be a config value here
         process.env.SECRET_KEY,
         { expiresIn: '1h' },
         (tokenError, newToken) => {

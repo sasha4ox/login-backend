@@ -42,6 +42,7 @@ class UserController {
     const token = request.token;
     try {
       if (!token) {
+        // TODO: Just spelling mistake - remove 'are' from the message below
         util.setError(401, 'You are need a token');
         return util.send(response);
       }
